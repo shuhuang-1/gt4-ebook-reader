@@ -1,0 +1,327 @@
+// ====BOOKS_END====
+// ============================================================
+//  阅读器逻辑 —— 整章一次性加载版（流畅优先）
+//
+//  与上一版的区别：
+//   1. 删掉 400ms 后台定时器（它是卡顿元凶：每补一批就全量重绘）
+//   2. 进入章节时一次性生成整章所有段，只重绘一次
+//   3. splitToBlocks 改用 substring + indexOf，O(n) 不再逐字符拼接
+//   4. resumePos 直接 scrollTo，不再 while 循环补段（重进不再卡）
+//   5. hasMore 默认 false，"继续加载"按钮不再出现
+//   6. 章末放"下一章"入口，点一下同样一次性生成下一章
+//   7. 进度保存改为章节级：进章存 / 翻章存 / 返回存
+// ============================================================
+
+// 每段多少字（字号30，每行12字，3行 = 33）
+var BLOCK_CHARS = 33;
+// 单章一次性最多生成多少段（超过才退回分批兜底，正常章节远达不到）
+var MAX_SEGS_ONCE = 600;
+// 章末"下一章"入口的显示文字
+var NEXT_TEXT = '下一章';
+var END_TEXT = '全书完';
+
+var BAR_W = 380;
+var TOC_TITLE_MAX = 11;
+
+var gChapter = 0;
+var gSegIdx = 0;
+var gTotalSegs = 0;
+var gTailPending = false;
+var gCharsRead = 0;
+var gTotalChars = 1;
+
+var gLastCh = 0;
+var gLoaded = false;
+
+// ---------- 切段：O(n)，不再逐字符拼接 ----------
+function splitToBlocks(text) {
+  var list = [];
+  var len = text.length;
+  var pos = 0;
+  while (pos < len) {
+    var end = pos + BLOCK_CHARS;
+    if (end >= len) {
+      var tail = text.substring(pos);
+      if (tail.length > 0) { list.push(tail); }
+      break;
+    }
+    // 在切点后 30 字内找句子结束符，避免把句子切断
+    var cut = -1;
+    var searchEnd = end + 30;
+    if (searchEnd > len) { searchEnd = len; }
+    var i = end;
+    while (i < searchEnd) {
+      var c = text.charAt(i);
+      if (c === '。' || c === '！' || c === '？' || c === '\n' || c === '”') {
+        cut = i + 1;
+        break;
+      }
+      i++;
+    }
+    if (cut < 0) { cut = end; }
+    list.push(text.substring(pos, cut));
+    pos = cut;
+  }
+  return list;
+}
+
+export default {
+  data: {
+    showList: true,
+    showToc: false,
+    showRead: false,
+    firstName: '',
+    chapCount: 0,
+    lastRead: '未开始阅读',
+    listBarW: 0,
+    chapters: [],
+    blocks: [],
+    hasMore: false,
+    timeText: '',
+    chapText: '',
+    barW: 0,
+    pgText: '0%'
+  },
+
+  onInit: function () {
+    if (BOOKS.length > 0) {
+      var book = BOOKS[0];
+      this.firstName = book.name;
+      this.chapCount = book.chapters.length;
+      var toc = [];
+      var total = 0;
+      for (var i = 0; i < book.chapters.length; i++) {
+        var t = book.chapters[i].title;
+        if (t.length > TOC_TITLE_MAX) {
+          t = t.substring(0, TOC_TITLE_MAX) + '…';
+        }
+        var num = i + 1;
+        var sn = '' + num;
+        if (num < 10) { sn = '00' + num; }
+        else if (num < 100) { sn = '0' + num; }
+        toc.push({ title: sn + '  ' + t });
+        total = total + book.chapters[i].title.length + book.chapters[i].text.length;
+      }
+      this.chapters = toc;
+      gTotalChars = total > 0 ? total : 1;
+    }
+    this.timeText = this.getNowTime();
+    this.readStore();
+  },
+
+  // 读上次进度（只存章节号，异步，失败就用 0）
+  readStore: function () {
+    var that = this;
+    try {
+      storage.get({
+        key: 'gt4r_ch',
+        success: function (d) {
+          var v = parseInt(d);
+          if (!isNaN(v) && v >= 0) { gLastCh = v; }
+          gLoaded = true;
+          that.refreshLastText();
+        },
+        fail: function () { gLoaded = true; }
+      });
+    } catch (e) {
+      gLoaded = true;
+    }
+  },
+
+  saveStore: function () {
+    try {
+      storage.set({ key: 'gt4r_ch', value: '' + gChapter });
+    } catch (e) {
+      // storage 不可用时静默失败
+    }
+  },
+
+  refreshLastText: function () {
+    if (gLoaded && gLastCh > 0) {
+      this.lastRead = '上次读到：第' + (gLastCh + 1) + '章';
+    }
+  },
+
+  getNowTime: function () {
+    var d = new Date();
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var hs = '' + h;
+    var ms = '' + m;
+    if (h < 10) { hs = '0' + h; }
+    if (m < 10) { ms = '0' + m; }
+    return hs + ':' + ms;
+  },
+
+  // ---------- 核心：一次性生成整章，只重绘一次 ----------
+  startFrom: function (ci) {
+    var book = BOOKS[0];
+    if (ci < 0 || ci >= book.chapters.length) { ci = 0; }
+    gChapter = ci;
+    gTailPending = false;
+
+    // 已读字数 = 前面所有章的字数
+    gCharsRead = 0;
+    for (var c = 0; c < ci; c++) {
+      gCharsRead = gCharsRead + book.chapters[c].title.length + book.chapters[c].text.length;
+    }
+
+    var segs = splitToBlocks(book.chapters[ci].text);
+    gTotalSegs = segs.length;
+    gSegIdx = 0;
+
+    var arr = [];
+    arr.push({ text: book.chapters[ci].title, isTitle: true, isGap: false, isBody: false, isNext: false });
+
+    var limit = segs.length;
+    if (limit > MAX_SEGS_ONCE) {
+      limit = MAX_SEGS_ONCE;
+      gTailPending = true;
+    }
+    for (var i = 0; i < limit; i++) {
+      arr.push({ text: segs[i], isTitle: false, isGap: false, isBody: true, isNext: false });
+      gCharsRead = gCharsRead + segs[i].length;
+      gSegIdx++;
+    }
+
+    // 章末入口
+    if (gSegIdx < gTotalSegs) {
+      arr.push({ text: '继续加载本章', isTitle: false, isGap: false, isBody: false, isNext: true });
+      this.hasMore = true;
+    } else if (ci + 1 < book.chapters.length) {
+      arr.push({ text: NEXT_TEXT, isTitle: false, isGap: false, isBody: false, isNext: true });
+      this.hasMore = false;
+    } else {
+      arr.push({ text: END_TEXT, isTitle: false, isGap: false, isBody: false, isNext: false });
+      this.hasMore = false;
+    }
+
+    this.blocks = arr;          // 一次性赋值 = 只重绘一次
+    this.updateProgress();
+    this.saveStore();
+  },
+
+  // ---------- 章末入口被点击 ----------
+  loadMore: function () {
+    var book = BOOKS[0];
+    // 情况A：本章还有余下段落没生成（超长章兜底）
+    if (gSegIdx < gTotalSegs) {
+      var segs = splitToBlocks(book.chapters[gChapter].text);
+      var arr = this.blocks.slice(0, this.blocks.length - 1);
+      var end = gSegIdx + MAX_SEGS_ONCE;
+      if (end > gTotalSegs) { end = gTotalSegs; }
+      for (var i = gSegIdx; i < end; i++) {
+        arr.push({ text: segs[i], isTitle: false, isGap: false, isBody: true, isNext: false });
+        gCharsRead = gCharsRead + segs[i].length;
+        gSegIdx++;
+      }
+      if (gSegIdx < gTotalSegs) {
+        arr.push({ text: '继续加载本章', isTitle: false, isGap: false, isBody: false, isNext: true });
+        this.hasMore = true;
+      } else if (gChapter + 1 < book.chapters.length) {
+        arr.push({ text: NEXT_TEXT, isTitle: false, isGap: false, isBody: false, isNext: true });
+        this.hasMore = false;
+      } else {
+        arr.push({ text: END_TEXT, isTitle: false, isGap: false, isBody: false, isNext: false });
+        this.hasMore = false;
+      }
+      this.blocks = arr;
+      this.updateProgress();
+      return;
+    }
+    // 情况B：本章读完，翻到下一章
+    this.nextChapter();
+  },
+
+  nextChapter: function () {
+    var book = BOOKS[0];
+    var nx = gChapter + 1;
+    if (nx >= book.chapters.length) { return; }
+    this.stopPreload();
+    this.startFrom(nx);
+    var that = this;
+    setTimeout(function () {
+      var el = that.$element('readlist');
+      if (el) { el.scrollTo({ index: 0 }); }
+    }, 60);
+  },
+
+  updateProgress: function () {
+    var pct = Math.floor((gCharsRead * 100) / gTotalChars);
+    if (pct < 0) { pct = 0; }
+    if (pct > 100) { pct = 100; }
+    this.barW = Math.floor((pct * BAR_W) / 100);
+    this.pgText = '' + pct + '%';
+    this.chapText = '第' + (gChapter + 1) + '章';
+    this.listBarW = Math.floor((pct * 380) / 100);
+    this.timeText = this.getNowTime();
+  },
+
+  // 兼容旧调用（已无定时器，保留空实现防止报错）
+  startPreload: function () {},
+  stopPreload: function () {},
+
+  // 点书卡片：回到上次章节开头
+  openBook: function () {
+    var ch = 0;
+    if (gLoaded) { ch = gLastCh; }
+    this.stopPreload();
+    this.startFrom(ch);
+    this.showList = false;
+    this.showRead = true;
+    var that = this;
+    setTimeout(function () {
+      var el = that.$element('readlist');
+      if (el) { el.scrollTo({ index: 0 }); }
+    }, 80);
+  },
+
+  refreshChapters: function () {
+    var tmp = this.chapters;
+    this.chapters = [];
+    var that = this;
+    setTimeout(function () {
+      that.chapters = tmp;
+    }, 20);
+  },
+
+  openToc: function () {
+    this.stopPreload();
+    this.showList = false;
+    this.showToc = true;
+    this.refreshChapters();
+  },
+
+  openChapter: function (idx) {
+    if (idx < 0) { return; }
+    this.stopPreload();
+    this.startFrom(idx);
+    this.showToc = false;
+    this.showRead = true;
+    this.lastRead = '上次读到：第' + (idx + 1) + '章';
+    var that = this;
+    setTimeout(function () {
+      var el = that.$element('readlist');
+      if (el) { el.scrollTo({ index: 0 }); }
+    }, 60);
+  },
+
+  goBack: function () {
+    this.stopPreload();
+    this.saveStore();
+    this.showRead = false;
+    this.showToc = true;
+    this.refreshChapters();
+  },
+
+  onSwipe: function (e) {
+    if (e.direction === 'right') {
+      if (this.showRead) {
+        this.goBack();
+      } else if (this.showToc) {
+        this.showToc = false;
+        this.showList = true;
+      }
+    }
+  }
+}

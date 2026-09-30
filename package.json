@@ -1,0 +1,6 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "dependencies": {"@ohos/hvigor": "3.2.4","@ohos/hvigor-ohos-plugin": "3.2.4"},
+  "devDependencies": {}
+}

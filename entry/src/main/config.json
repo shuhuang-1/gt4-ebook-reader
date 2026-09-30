@@ -1,0 +1,49 @@
+{
+  "app": {
+    "bundleName": "com.me.gt4reader",
+    "vendor": "bandbbs",
+    "version": {
+      "code": 1000000,
+      "name": "1.0.0"
+    },
+    "apiVersion": {
+      "compatible": 6,
+      "target": 6,
+      "releaseType": "Release"
+    }
+  },
+  "deviceConfig": {},
+  "module": {
+    "deviceType": [
+      "liteWearable"
+    ],
+    "distro": {
+      "deliveryWithInstall": true,
+      "moduleName": "entry",
+      "moduleType": "entry"
+    },
+    "abilities": [
+      {
+        "name": "MainAbility",
+        "srcLanguage": "js",
+        "srcPath": "MainAbility",
+        "type": "page",
+        "label": "$string:app_name",
+        "description": "$string:app_name",
+        "icon": "$media:icon"
+      }
+    ],
+    "js": [
+      {
+        "pages": [
+          "pages/index/index"
+        ],
+        "name": "MainAbility",
+        "window": {
+          "designWidth": 466,
+          "autoDesignWidth": false
+        }
+      }
+    ]
+  }
+}

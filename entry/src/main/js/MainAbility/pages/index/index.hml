@@ -1,0 +1,100 @@
+<div class="container" onswipe="onSwipe">
+
+<!-- 页1：书架 -->
+    <div if="{{showList}}" class="page">
+        <text class="title">电子书</text>
+        <list class="booklist" scrollbar="off">
+            <list-item class="item" for="{{shelf}}" onclick="openBook($idx)">
+                <text class="bname">{{$item.n}}</text>
+                <text class="bmeta">{{$item.p}}</text>
+            </list-item>
+        </list>
+    <!-- 导入入口：接真实通道时只需改 JS 的 startImport() -->
+        <div class="impcard" onclick="openImport">
+            <text class="impname">＋ 从手机导入</text>
+        </div>
+    </div>
+
+<!-- 页4：导入（占位页 + 通道自检） -->
+    <div if="{{showImport}}" class="page">
+        <text class="title">从手机导入</text>
+        <text class="impmsg">{{impMsg}}</text>
+        <div class="impbtn" onclick="probeImport">
+            <text class="impbtntxt">检测通道</text>
+        </div>
+        <div class="impbtn" onclick="backFromImport">
+            <text class="impbtntxt">返回书架</text>
+        </div>
+    </div>
+
+<!-- 页2：目录 -->
+    <div if="{{showToc}}" class="page">
+        <text class="title">{{tocTitle}}</text>
+        <list class="toclist" scrollbar="off" onreachend="tocMore">
+            <list-item class="tocitem" for="{{chapters}}" onclick="openChapter($idx)">
+                <text class="txt">{{$item.t}}</text>
+            </list-item>
+        </list>
+    </div>
+
+<!-- 页3：阅读页 -->
+    <div if="{{showRead}}" class="page">
+        <list class="readlist" id="readlist" scrollbar="off" onclick="openMenu"
+              onscroll="onScroll" onreachend="onReach">
+            <list-item class="rpad"><text class="pad"></text></list-item>
+            <list-item class="ritem" for="{{blocks}}">
+                <text if="{{$item.isTitle}}" class="rtitle">{{$item.text}}</text>
+                <text if="{{$item.isBody}}" class="rtext">{{$item.text}}</text>
+            </list-item>
+            <list-item class="rpad"><text class="pad"></text></list-item>
+        </list>
+
+    <!-- 二级菜单：透明覆盖在正文之上 -->
+        <div if="{{showMenu}}" class="menumask">
+            <div class="mtopwrap">
+                <div class="mtopbg"></div>
+                <text class="mstatus">{{clock}}   {{batt}}%</text>
+            </div>
+            <div class="mrowwrap">
+                <div class="mrowbg"></div>
+                <div class="mrow">
+                    <text class="mback" onclick="goBack">{{iconBack}}</text>
+                    <text class="mchap">{{chapText}}</text>
+                    <text class="mmore">{{iconMore}}</text>
+                </div>
+            </div>
+            <div class="fade f1"></div>
+            <div class="fade f2"></div>
+            <div class="fade f3"></div>
+            <div class="fade f4"></div>
+            <div class="fade f5"></div>
+            <div class="fade f6"></div>
+            <div class="fade f7"></div>
+            <div class="fade f8"></div>
+            <div class="msp" onclick="closeMenu"></div>
+            <text class="mtoast">{{toastText}}</text>
+            <div class="fade g1"></div>
+            <div class="fade g2"></div>
+            <div class="fade g3"></div>
+            <div class="fade g4"></div>
+            <div class="fade g5"></div>
+            <div class="fade g6"></div>
+            <div class="fade g7"></div>
+            <div class="fade g8"></div>
+            <div class="fade g9"></div>
+            <div class="fade g10"></div>
+            <div class="mbottomwrap">
+                <div class="mbottombg"></div>
+                <div class="mbottom">
+                    <text class="micon" onclick="toggleLight">{{iconLight}}</text>
+                    <div class="mmid">
+                        <text class="mprog">{{chapNo}} / {{chapTotal}}</text>
+                        <text class="mprog2">阅读进度</text>
+                    </div>
+                    <text class="micon2">{{iconMark}}</text>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

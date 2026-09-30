@@ -1,0 +1,17 @@
+node_modules/
+.idea/
+.hvigor/
+_hapcheck/
+sizetest/
+local.properties
+build/
+dist/
+ohpm_cache/
+*.hap
+*.pac
+*.p12
+*.cer
+*.jks
+*.keystore
+*.bin
+*.log

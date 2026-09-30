@@ -1,0 +1,8 @@
+{
+  "string": [
+    { "name": "app_name", "value": "电子书" },
+    { "name": "MainAbility_label", "value": "电子书" },
+    { "name": "MainAbility_desc", "value": "GT4 电子书阅读器" },
+    { "name": "entry_MainAbility", "value": "电子书" }
+  ]
+}

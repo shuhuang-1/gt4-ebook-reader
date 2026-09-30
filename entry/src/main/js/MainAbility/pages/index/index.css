@@ -1,0 +1,100 @@
+.container { width: 466px; height: 466px; background-color: #000000; }
+.page { width: 466px; height: 466px; flex-direction: column; }
+
+.title { width: 466px; height: 60px; margin-left: 0; font-size: 24px; color: #888888; text-align: center; }
+
+/* ─────── 书架 ─────── */
+/* 高度合计 60 + 334 + 4 + 46 = 444，底部留 22 给圆边 */
+.booklist { width: 466px; height: 334px; margin-left: 0; }
+.item {
+    width: 380px; height: 120px; margin-left: 43px; margin-bottom: 14px;
+    background-color: #1f1f1f; flex-direction: column; justify-content: center;
+    border-radius: 32px;
+}
+.bname { width: 348px; height: 38px; margin-left: 16px; font-size: 26px; color: #ffffff; text-align: left; }
+.bmeta { width: 348px; height: 30px; margin-left: 16px; font-size: 20px; color: #999999; text-align: left; }
+
+/* ─────── 导入入口：压扁成一条窄条，弱化存在感 ─────── */
+/* 高度 76 → 46，字号 22 → 18，圆角 26 → 16，颜色更暗 */
+.impcard {
+    width: 380px; height: 46px; margin-left: 43px; margin-top: 4px;
+    background-color: #141414; flex-direction: column; justify-content: center;
+    border-radius: 16px;
+}
+.impname { width: 348px; height: 26px; margin-left: 16px; font-size: 18px; color: #666666; text-align: center; }
+
+/* ─────── 导入页 ─────── */
+.impmsg { width: 400px; height: 190px; margin-left: 33px; font-size: 21px; color: #aaaaaa; text-align: center; }
+.impbtn {
+    width: 300px; height: 76px; margin-left: 83px; margin-bottom: 14px;
+    background-color: #1f1f1f; flex-direction: column; justify-content: center;
+    border-radius: 28px;
+}
+.impbtntxt { width: 300px; font-size: 24px; color: #ffffff; text-align: center; }
+
+/* ─────── 目录 ─────── */
+.toclist { width: 466px; height: 380px; margin-left: 0; }
+.tocitem {
+    width: 380px; height: 64px; margin-left: 43px; margin-bottom: 10px;
+    background-color: #1f1f1f; flex-direction: column; justify-content: center;
+    border-radius: 32px;
+}
+.txt { width: 348px; margin-left: 16px; font-size: 26px; color: #ffffff; text-align: left; }
+
+/* ─────── 阅读页 ─────── */
+.readlist { width: 466px; height: 466px; margin-left: 0; margin-top: 0; }
+.rpad { width: 466px; height: 100px; }
+.pad { width: 466px; height: 1px; }
+.ritem { width: 466px; height: 38px; flex-direction: column; justify-content: center; }
+.rtitle { width: 466px; font-size: 27px; color: #ffffff; text-align: left; }
+.rtext { width: 466px; font-size: 27px; color: #dddddd; text-align: left; }
+
+/* ═══════════════════════════════════════════════
+   二级菜单：背景层(*bg) 与 内容层 分离，文字 100% 亮
+   高度合计 26+40+80+80+28+100+112 = 466
+   ═══════════════════════════════════════════════ */
+.menumask { width: 466px; height: 466px; margin-top: -466px; flex-direction: column; }
+
+.mtopwrap { width: 466px; height: 26px; flex-direction: column; }
+.mtopbg { width: 466px; height: 26px; background-color: #000000; opacity: 0.75; }
+.mstatus { width: 466px; height: 26px; margin-top: -26px; font-size: 19px; color: #dddddd; text-align: center; }
+
+.mrowwrap { width: 466px; height: 40px; flex-direction: column; }
+.mrowbg { width: 466px; height: 40px; background-color: #000000; opacity: 0.62; }
+.mrow { width: 466px; height: 40px; margin-top: -40px; flex-direction: row; align-items: center; }
+.mback { width: 44px; height: 40px; margin-left: 90px; font-size: 26px; color: #ffffff; text-align: center; }
+.mchap { width: 198px; height: 40px; font-size: 20px; color: #ffffff; text-align: center; }
+.mmore { width: 44px; height: 40px; font-size: 26px; color: #ffffff; text-align: center; }
+
+.fade { width: 466px; height: 10px; background-color: #000000; }
+.f1 { opacity: 0.52; }
+.f2 { opacity: 0.46; }
+.f3 { opacity: 0.40; }
+.f4 { opacity: 0.34; }
+.f5 { opacity: 0.28; }
+.f6 { opacity: 0.22; }
+.f7 { opacity: 0.16; }
+.f8 { opacity: 0.10; }
+
+.msp { width: 466px; height: 80px; }
+.mtoast { width: 466px; height: 28px; font-size: 21px; color: #5aa0e8; text-align: center; }
+
+.g1  { opacity: 0.07; }
+.g2  { opacity: 0.17; }
+.g3  { opacity: 0.27; }
+.g4  { opacity: 0.37; }
+.g5  { opacity: 0.47; }
+.g6  { opacity: 0.57; }
+.g7  { opacity: 0.68; }
+.g8  { opacity: 0.79; }
+.g9  { opacity: 0.90; }
+.g10 { opacity: 1.00; }
+
+.mbottomwrap { width: 466px; height: 112px; flex-direction: column; }
+.mbottombg { width: 466px; height: 112px; background-color: #000000; opacity: 1.00; }
+.mbottom { width: 466px; height: 112px; margin-top: -112px; flex-direction: row; align-items: flex-start; }
+.micon { width: 52px; height: 58px; margin-left: 92px; margin-top: 6px; font-size: 34px; color: #ffffff; text-align: center; }
+.mmid { width: 178px; height: 58px; margin-top: 6px; flex-direction: column; justify-content: center; }
+.mprog { width: 178px; height: 38px; font-size: 30px; color: #ffffff; text-align: center; }
+.mprog2 { width: 178px; height: 20px; font-size: 19px; color: #cccccc; text-align: center; }
+.micon2 { width: 52px; height: 58px; margin-top: 6px; font-size: 34px; color: #ffffff; text-align: center; }
