@@ -1,5 +1,7 @@
 # GT4 电子书阅读器
 
+> 当前版本 **v0.2**：已改用 **AGC 发布证书**签名（非调试包），可用于正式分发。
+
 一个为**华为 WATCH GT 4** 圆形手表打造的本地电子书阅读器，基于 HarmonyOS **Lite Wearable**（JS + FA 模型）开发。
 
 > **English**: A local ebook reader for Huawei WATCH GT 4 (466×466 round screen), built on HarmonyOS Lite Wearable (JS + FA model).
@@ -10,6 +12,8 @@
 其实还是有很多所功能缺失的，代码不算复杂，也有注释，改起来不难，就是华为的deveco studio不好用（想要打包hap就必须要用它）。
 如果你打开源代码看的话，其实可以看出AI痕迹，很正常，这确实是AI转译的（我只会写C++，真的不会写JaveSprite和html啊，我才13岁，这还是我用课余时间做的😭）。有几点要注意一下，想要改的话，要去安装
 4.1版本的Deveco Studio，其他版本可能会出问题，SDK版本要api8.
+
+现在更新的这个版本没有加工能，但是把调试证书改成了发布证书，不再绑定我的手表udid，可以直接拿去用应用调试助手安装
 
 ## ✨ 功能特性
 
@@ -53,6 +57,7 @@
 | HarmonyOS SDK | API 9（compileSdk / compatibleSdk = 8） |
 | 设备 | 华为 WATCH GT 4 (PNX-B19)，HarmonyOS 5.0.0 |
 | 模型 | **Lite Wearable / LiteOS，JS + FA 模型** |
+| 签名 | AGC **发布证书**（`.cer`）+ 发布 Profile（`.p7b`），需自行申请 |
 
 ⚠️ **不支持 ArkTS / Stage 模型**。这是 Lite Wearable 的硬性限制。
 
@@ -60,8 +65,22 @@
 
 1. 用 DevEco Studio 打开 `MyApplication2/` 工程
 2. 配置签名（File → Project Structure → Signing Configs）
-3. Build → Build Hap(s)/APP(s)
-4. 通过华为运动健康 App 或 `hdc` 安装到手表
+    - 取消勾选 `Automatically generate signature`
+    - 在 AGC 申请**发布证书**与**发布 Profile**（类型别选成"调试"）
+    - 填入自有的 `.p12` / `.p7b` / `.cer`，Sign Alg 固定 `SHA256withECDSA`
+3. Build → Build Hap(s)/APP(s) → Build APP(s)
+4. 通过 `hdc` 安装到手表
+
+### 安装注意
+
+发布签名与调试签名**不同源**，无法覆盖安装。装 v0.2 前必须先卸载调试版：
+
+```bash
+hdc uninstall com.me.gt4reader
+hdc install 电子书.hap
+```
+
+🔒 密钥库 `.p12` 及 AGC 证书文件**不在本仓库**，也不应提交。请自行备份 `.p12` —— 该文件一旦丢失，将无法再更新应用。
 
 ### 添加你自己的书
 
