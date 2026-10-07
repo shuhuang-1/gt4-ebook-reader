@@ -1,100 +1,459 @@
-.container { width: 466px; height: 466px; background-color: #000000; }
-.page { width: 466px; height: 466px; flex-direction: column; }
+/* ════════════════════════════════════════════════════════════
+   GT4 腕上阅读器 · 样式表
 
-.title { width: 466px; height: 60px; margin-left: 0; font-size: 24px; color: #888888; text-align: center; }
+   配色（与安卓端一致）：
+     bg      #101318   最底层背景
+     card    #1A1E26   卡片 / 列表项
+     card2   #222733   次级块（导入入口）
+     accent  #5B8CFF   主色蓝
+     text1   #E9EBF0   主要文字
+     text2   #8B93A1   次要文字
 
-/* ─────── 书架 ─────── */
-/* 高度合计 60 + 334 + 4 + 46 = 444，底部留 22 给圆边 */
-.booklist { width: 466px; height: 334px; margin-left: 0; }
-.item {
-    width: 380px; height: 120px; margin-left: 43px; margin-bottom: 14px;
-    background-color: #1f1f1f; flex-direction: column; justify-content: center;
-    border-radius: 32px;
+   ⚠️ 尺寸完全沿用 GitHub 已验证版本，一像素没动
+      菜单层总账 = 26+40+80+80+28+100+112 = 466
+      hml 保持 f1~f8 / g1~g10 不变，本文件可单独替换
+   ════════════════════════════════════════════════════════════ */
+
+
+/* ────────────────────────────────────────────────
+   根容器：整个应用的底板
+   ──────────────────────────────────────────────── */
+.container {
+    width: 466px;
+    height: 466px;
+    background-color: #101318;
 }
-.bname { width: 348px; height: 38px; margin-left: 16px; font-size: 26px; color: #ffffff; text-align: left; }
-.bmeta { width: 348px; height: 30px; margin-left: 16px; font-size: 20px; color: #999999; text-align: left; }
 
-/* ─────── 导入入口：压扁成一条窄条，弱化存在感 ─────── */
-/* 高度 76 → 46，字号 22 → 18，圆角 26 → 16，颜色更暗 */
+
+/* ────────────────────────────────────────────────
+   页面通用容器：四个页共用
+   ──────────────────────────────────────────────── */
+.page {
+    width: 466px;
+    height: 466px;
+    flex-direction: column;
+}
+
+
+/* ────────────────────────────────────────────────
+   页面大标题（"电子书" / "从手机导入" / 书名）
+   ──────────────────────────────────────────────── */
+.title {
+    width: 466px;
+    height: 60px;
+    margin-left: 0;
+    font-size: 24px;
+    color: #E9EBF0;
+    text-align: center;
+}
+
+
+/* ══════════════ 页1：书架 ══════════════ */
+
+/* 书架列表容器 */
+/* 高度合计 60 + 334 + 4 + 46 = 444，底部留 22 给圆边 */
+.booklist {
+    width: 466px;
+    height: 334px;
+    margin-left: 0;
+}
+
+/* 一本书的卡片 */
+.item {
+    width: 380px;
+    height: 120px;
+    margin-left: 43px;
+    margin-bottom: 14px;
+    background-color: #1A1E26;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 32px;      /* 卡片圆角，想改就改这个 */
+}
+
+/* 书名 */
+/* ⚠️ font-size 必须与 index.js 的 NAME_FS 一致，否则截断会算错 */
+.bname {
+    width: 348px;
+    height: 38px;
+    margin-left: 16px;
+    font-size: 26px;          /* 联动 NAME_FS = 26 */
+    color: #E9EBF0;
+    text-align: left;
+}
+
+/* 书名下方小字（章数 / 进度） */
+.bmeta {
+    width: 348px;
+    height: 30px;
+    margin-left: 16px;
+    font-size: 20px;
+    color: #8B93A1;
+    text-align: left;
+}
+
+
+/* ══════════════ 导入入口（书架底部窄条）══════════════ */
+/* 保留你的微调：高 46、字号 18、圆角 16 */
+
 .impcard {
-    width: 380px; height: 46px; margin-left: 43px; margin-top: 4px;
-    background-color: #141414; flex-direction: column; justify-content: center;
+    width: 380px;
+    height: 46px;
+    margin-left: 43px;
+    margin-top: 4px;
+    background-color: #222733;
+    flex-direction: column;
+    justify-content: center;
     border-radius: 16px;
 }
-.impname { width: 348px; height: 26px; margin-left: 16px; font-size: 18px; color: #666666; text-align: center; }
 
-/* ─────── 导入页 ─────── */
-.impmsg { width: 400px; height: 190px; margin-left: 33px; font-size: 21px; color: #aaaaaa; text-align: center; }
+/* 按钮文字 */
+.impname {
+    width: 348px;
+    height: 26px;
+    margin-left: 16px;
+    font-size: 18px;
+    color: #5B8CFF;           /* 主色蓝，引导点击 */
+    text-align: center;
+}
+
+
+/* ══════════════ 页4：导入页 ══════════════ */
+
+/* 通道自检的说明文字块 */
+.impmsg {
+    width: 400px;
+    height: 190px;
+    margin-left: 33px;
+    font-size: 21px;
+    color: #8B93A1;
+    text-align: center;
+}
+
+/* 导入页按钮（检测通道 / 返回书架） */
 .impbtn {
-    width: 300px; height: 76px; margin-left: 83px; margin-bottom: 14px;
-    background-color: #1f1f1f; flex-direction: column; justify-content: center;
+    width: 300px;
+    height: 76px;
+    margin-left: 83px;
+    margin-bottom: 14px;
+    background-color: #1A1E26;
+    flex-direction: column;
+    justify-content: center;
     border-radius: 28px;
 }
-.impbtntxt { width: 300px; font-size: 24px; color: #ffffff; text-align: center; }
 
-/* ─────── 目录 ─────── */
-.toclist { width: 466px; height: 380px; margin-left: 0; }
+/* 按钮文字 */
+.impbtntxt {
+    width: 300px;
+    font-size: 24px;
+    color: #E9EBF0;
+    text-align: center;
+}
+
+
+/* ══════════════ 页2：目录 ══════════════ */
+
+/* 章节列表容器 */
+.toclist {
+    width: 466px;
+    height: 380px;
+    margin-left: 0;
+}
+
+/* 一个章节行 */
 .tocitem {
-    width: 380px; height: 64px; margin-left: 43px; margin-bottom: 10px;
-    background-color: #1f1f1f; flex-direction: column; justify-content: center;
+    width: 380px;
+    height: 64px;
+    margin-left: 43px;
+    margin-bottom: 10px;
+    background-color: #1A1E26;
+    flex-direction: column;
+    justify-content: center;
     border-radius: 32px;
 }
-.txt { width: 348px; margin-left: 16px; font-size: 26px; color: #ffffff; text-align: left; }
 
-/* ─────── 阅读页 ─────── */
-.readlist { width: 466px; height: 466px; margin-left: 0; margin-top: 0; }
-.rpad { width: 466px; height: 100px; }
-.pad { width: 466px; height: 1px; }
-.ritem { width: 466px; height: 38px; flex-direction: column; justify-content: center; }
-.rtitle { width: 466px; font-size: 27px; color: #ffffff; text-align: left; }
-.rtext { width: 466px; font-size: 27px; color: #dddddd; text-align: left; }
+/* 章节标题文字 */
+.txt {
+    width: 348px;
+    margin-left: 16px;
+    font-size: 26px;
+    color: #E9EBF0;
+    text-align: left;
+}
 
-/* ═══════════════════════════════════════════════
-   二级菜单：背景层(*bg) 与 内容层 分离，文字 100% 亮
-   高度合计 26+40+80+80+28+100+112 = 466
-   ═══════════════════════════════════════════════ */
-.menumask { width: 466px; height: 466px; margin-top: -466px; flex-direction: column; }
 
-.mtopwrap { width: 466px; height: 26px; flex-direction: column; }
-.mtopbg { width: 466px; height: 26px; background-color: #000000; opacity: 0.75; }
-.mstatus { width: 466px; height: 26px; margin-top: -26px; font-size: 19px; color: #dddddd; text-align: center; }
+/* ══════════════ 页3：阅读页 ══════════════ */
 
-.mrowwrap { width: 466px; height: 40px; flex-direction: column; }
-.mrowbg { width: 466px; height: 40px; background-color: #000000; opacity: 0.62; }
-.mrow { width: 466px; height: 40px; margin-top: -40px; flex-direction: row; align-items: center; }
-.mback { width: 44px; height: 40px; margin-left: 90px; font-size: 26px; color: #ffffff; text-align: center; }
-.mchap { width: 198px; height: 40px; font-size: 20px; color: #ffffff; text-align: center; }
-.mmore { width: 44px; height: 40px; font-size: 26px; color: #ffffff; text-align: center; }
+/* 正文滚动容器 */
+.readlist {
+    width: 466px;
+    height: 466px;
+    margin-left: 0;
+    margin-top: 0;
+}
 
-.fade { width: 466px; height: 10px; background-color: #000000; }
-.f1 { opacity: 0.52; }
-.f2 { opacity: 0.46; }
-.f3 { opacity: 0.40; }
+/* 正文上下留白（首行 / 末行不贴边） */
+.rpad {
+    width: 466px;
+    height: 100px;
+}
+
+/* 留白里的占位块（1px，不可见） */
+.pad {
+    width: 466px;
+    height: 1px;
+}
+
+/* 一个文本块 */
+.ritem {
+    width: 466px;
+    height: 38px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 正文里的章节标题 */
+.rtitle {
+    width: 466px;
+    font-size: 27px;
+    color: #5B8CFF;           /* 主色蓝，翻到新章时醒目 */
+    text-align: left;
+}
+
+/* 正文文字 */
+.rtext {
+    width: 466px;
+    font-size: 27px;
+    color: #E9EBF0;
+    text-align: left;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   二级菜单（阅读页点一下弹出来的那层）
+
+   结构：背景层(*bg) 与 内容层分离，内容层用负 margin 盖上去
+        —— 这样文字永远 100% 亮，不受背景层 opacity 影响
+
+   高度合计 = 26 + 40 + 80(f×8) + 80 + 28 + 100(g×10) + 112 = 466
+   ⚠️ 这些高度和负 margin 是同一套账，别单改某一个
+   ════════════════════════════════════════════════════════════ */
+
+/* 遮罩总容器：负 margin 盖到正文之上 */
+.menumask {
+    width: 466px;
+    height: 466px;
+    margin-top: -466px;
+    flex-direction: column;
+}
+
+
+/* ── 顶部：时间 + 电量 ── */
+
+.mtopwrap {
+    width: 466px;
+    height: 26px;
+    flex-direction: column;
+}
+
+/* 顶部背景层：半透，能透出一点正文 */
+.mtopbg {
+    width: 466px;
+    height: 26px;
+    background-color: #101318;
+    opacity: 0.75;
+}
+
+/* 时间电量文字层：盖到 mtopbg 上面，100% 亮 */
+.mstatus {
+    width: 466px;
+    height: 26px;
+    margin-top: -26px;
+    font-size: 19px;
+    color: #8B93A1;
+    text-align: center;
+}
+
+
+/* ── 第二行：返回 / 章节名 / 更多 ── */
+
+.mrowwrap {
+    width: 466px;
+    height: 40px;
+    flex-direction: column;
+}
+
+/* 章节行背景层 */
+.mrowbg {
+    width: 466px;
+    height: 40px;
+    background-color: #1A1E26;
+    opacity: 0.62;
+}
+
+/* 章节行内容层：盖到 mrowbg 上面 */
+.mrow {
+    width: 466px;
+    height: 40px;
+    margin-top: -40px;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* 返回图标（左，可点） */
+.mback {
+    width: 44px;
+    height: 40px;
+    margin-left: 90px;
+    font-size: 26px;
+    color: #5B8CFF;           /* 可点元素用主色蓝 */
+    text-align: center;
+}
+
+/* 当前章节名（中） */
+.mchap {
+    width: 198px;
+    height: 40px;
+    font-size: 20px;
+    color: #E9EBF0;
+    text-align: center;
+}
+
+/* 更多图标（右，目前不可点） */
+.mmore {
+    width: 44px;
+    height: 40px;
+    font-size: 26px;
+    color: #8B93A1;
+    text-align: center;
+}
+
+
+/* ═══════════ 渐隐条：渐变效果的核心 ═══════════ */
+/* 平台不支持 linear-gradient，用"一堆不同透明度的条"叠出来 */
+/* .fade 是公共尺寸（宽 466、高 10、底色），f/g 只给透明度 */
+/*   上：8 条 × 10px = 80px　下：10 条 × 10px = 100px */
+/* ⚠️ hml 里 div 条数必须和这里 f/g 数量一致，否则总高对不上 */
+.fade {
+    width: 466px;
+    height: 10px;
+    background-color: #101318;
+}
+
+
+/* ── 上渐隐：实心 → 全透明，正文渐渐露出来 ── */
+/* f1 最浓（接住 mrowbg 的 0.62）→ f8 最淡（几乎全透）*/
+/* 每级 -0.08，衰减比较快，正文很快就完全清晰 */
+.f1 { opacity: 0.58; }
+.f2 { opacity: 0.50; }
+.f3 { opacity: 0.42; }
 .f4 { opacity: 0.34; }
-.f5 { opacity: 0.28; }
-.f6 { opacity: 0.22; }
-.f7 { opacity: 0.16; }
-.f8 { opacity: 0.10; }
+.f5 { opacity: 0.26; }
+.f6 { opacity: 0.18; }
+.f7 { opacity: 0.10; }
+.f8 { opacity: 0.03; }
 
-.msp { width: 466px; height: 80px; }
-.mtoast { width: 466px; height: 28px; font-size: 21px; color: #5aa0e8; text-align: center; }
 
-.g1  { opacity: 0.07; }
-.g2  { opacity: 0.17; }
-.g3  { opacity: 0.27; }
-.g4  { opacity: 0.37; }
+/* ── 完全清晰区：正文 100% 可见，点这里关闭菜单 ── */
+.msp {
+    width: 466px;
+    height: 80px;
+}
+
+
+/* ── 提示文字（"已保存进度" 之类）── */
+.mtoast {
+    width: 466px;
+    height: 28px;
+    font-size: 21px;
+    color: #5B8CFF;
+    text-align: center;
+}
+
+
+/* ── 下渐隐：全透明 → 全黑，正文渐渐被吃掉 ── */
+/* g1 最淡（正文清晰）→ g10 全黑（无缝接住底部栏）*/
+/* 每级 +0.11 */
+.g1  { opacity: 0.03; }
+.g2  { opacity: 0.14; }
+.g3  { opacity: 0.25; }
+.g4  { opacity: 0.36; }
 .g5  { opacity: 0.47; }
-.g6  { opacity: 0.57; }
-.g7  { opacity: 0.68; }
-.g8  { opacity: 0.79; }
+.g6  { opacity: 0.58; }
+.g7  { opacity: 0.69; }
+.g8  { opacity: 0.80; }
 .g9  { opacity: 0.90; }
-.g10 { opacity: 1.00; }
+.g10 { opacity: 1.00; }       /* 与 mbottombg 的 1.00 一致，接缝看不出来 */
 
-.mbottomwrap { width: 466px; height: 112px; flex-direction: column; }
-.mbottombg { width: 466px; height: 112px; background-color: #000000; opacity: 1.00; }
-.mbottom { width: 466px; height: 112px; margin-top: -112px; flex-direction: row; align-items: flex-start; }
-.micon { width: 52px; height: 58px; margin-left: 92px; margin-top: 6px; font-size: 34px; color: #ffffff; text-align: center; }
-.mmid { width: 178px; height: 58px; margin-top: 6px; flex-direction: column; justify-content: center; }
-.mprog { width: 178px; height: 38px; font-size: 30px; color: #ffffff; text-align: center; }
-.mprog2 { width: 178px; height: 20px; font-size: 19px; color: #cccccc; text-align: center; }
-.micon2 { width: 52px; height: 58px; margin-top: 6px; font-size: 34px; color: #ffffff; text-align: center; }
+
+/* ── 底部栏：亮度 / 进度 / 书签 ── */
+
+.mbottomwrap {
+    width: 466px;
+    height: 112px;
+    flex-direction: column;
+}
+
+/* 底部背景层：全黑，要显示图标和进度数字 */
+.mbottombg {
+    width: 466px;
+    height: 112px;
+    background-color: #101318;
+    opacity: 1.00;
+}
+
+/* 底部内容层：盖到 mbottombg 上面 */
+.mbottom {
+    width: 466px;
+    height: 112px;
+    margin-top: -112px;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+/* 亮度图标（左下，可点） */
+.micon {
+    width: 52px;
+    height: 58px;
+    margin-left: 92px;        /* 内容总宽 282，(466-282)/2 = 92 居中 */
+    margin-top: 6px;
+    font-size: 34px;
+    color: #5B8CFF;
+    text-align: center;
+}
+
+/* 中间进度区容器 */
+.mmid {
+    width: 178px;
+    height: 58px;
+    margin-top: 6px;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 进度数字 "18 / 25" */
+.mprog {
+    width: 178px;
+    height: 38px;
+    font-size: 30px;
+    color: #E9EBF0;
+    text-align: center;
+}
+
+/* "阅读进度" 标签 */
+.mprog2 {
+    width: 178px;
+    height: 20px;
+    font-size: 19px;
+    color: #8B93A1;
+    text-align: center;
+}
+
+/* 书签图标（右下，目前不可点） */
+.micon2 {
+    width: 52px;
+    height: 58px;
+    margin-top: 6px;
+    font-size: 34px;
+    color: #8B93A1;
+    text-align: center;
+}

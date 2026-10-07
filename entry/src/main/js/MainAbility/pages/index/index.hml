@@ -9,13 +9,12 @@
                 <text class="bmeta">{{$item.p}}</text>
             </list-item>
         </list>
-    <!-- 导入入口：接真实通道时只需改 JS 的 startImport() -->
         <div class="impcard" onclick="openImport">
             <text class="impname">＋ 从手机导入</text>
         </div>
     </div>
 
-<!-- 页4：导入（占位页 + 通道自检） -->
+<!-- 页4：导入 -->
     <div if="{{showImport}}" class="page">
         <text class="title">从手机导入</text>
         <text class="impmsg">{{impMsg}}</text>
@@ -49,7 +48,6 @@
             <list-item class="rpad"><text class="pad"></text></list-item>
         </list>
 
-    <!-- 二级菜单：透明覆盖在正文之上 -->
         <div if="{{showMenu}}" class="menumask">
             <div class="mtopwrap">
                 <div class="mtopbg"></div>
